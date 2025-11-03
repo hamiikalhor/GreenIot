@@ -1,0 +1,96 @@
+# -------------------------------
+# C / C++ build files
+# -------------------------------
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.out
+*.elf
+*.map
+*.bin
+*.hex
+*.log
+*.lst
+
+# Compiled resources
+*.d
+*.pyc
+
+# IDE files (VSCode, CLion, etc.)
+.vscode/
+.idea/
+*.swp
+*.swo
+*.user
+*.workspace
+*.cbp
+
+# -------------------------------
+# Altium Designer
+# -------------------------------
+# Project backups & generated files
+History/
+__Previews/
+Project Logs/
+*.PrjPCBStructure
+*.SchDocPreview
+*.PcbDocPreview
+*.OutJob.Log
+*.VersionControl*
+*.DBLib.Log
+*.DBLink.Log
+*.DblibCache
+*.Compiled
+*.PrjPCBStructure
+*.ECO
+*.log
+
+# Generated outputs
+*.Gerber/
+*.FAB/
+*.OutputJob/
+*.Reports/
+*.Tmp/
+*.Zip
+*.rar
+
+# -------------------------------
+# Proteus (Labcenter Electronics)
+# -------------------------------
+*.pdsbak
+*.pdsprj.BAK
+*.bak
+*.tmp
+*.dsn.BAK
+*.log
+*.ddb#*
+*.dps
+*.DPS
+*.PWI
+*.IDB
+
+# Simulation outputs
+*.hex
+*.cof
+*.elf
+*.lst
+*.res
+*.tmp
+*.sim
+*.err
+
+# -------------------------------
+# OS / Editor junk
+# -------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# -------------------------------
+# Keep empty directories (with .gitkeep)
+# -------------------------------
+!.gitkeep
