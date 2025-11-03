@@ -1,0 +1,187 @@
+/**
+ * @file test_main.cpp
+ * @brief Unified Unit Tests for GreenIoT Firmware
+ * 
+ * Tests all layers:
+ * - Sensor Interface (HAL Layer)
+ * - I2C Driver (Peripheral Layer)
+ * - System Manager (Application Layer)
+ * 
+ * @author GreenIoT Vertical Farming Project
+ * @date 2025-11-03
+ */
+
+#include <Arduino.h>
+#include <unity.h>
+#include "HAL/Sensor/sensor_interface.h"
+#include "Drivers/i2c_driver.h"
+#include "system.h"
+
+// ============================================================================
+// SENSOR INTERFACE TESTS (HAL Layer)
+// ============================================================================
+
+// Test: Check if sensor registry returns valid interface for known sensor
+void test_sensor_get_interface_valid() {
+    const sensor_interface_t *sensor = sensor_get_interface("SHT31");
+    TEST_ASSERT_NOT_NULL_MESSAGE(sensor, "SHT31 sensor should be registered");
+    TEST_ASSERT_NOT_NULL(sensor->init);
+    TEST_ASSERT_NOT_NULL(sensor->read);
+    TEST_ASSERT_NOT_NULL(sensor->trigger_measurement);
+}
+
+// Test: Check if sensor registry returns NULL for unknown sensor
+void test_sensor_get_interface_invalid() {
+    const sensor_interface_t *sensor = sensor_get_interface("UNKNOWN_SENSOR");
+    TEST_ASSERT_NULL_MESSAGE(sensor, "Unknown sensor should return NULL");
+}
+
+// Test: Check if available sensors list is not empty
+void test_sensor_get_available_sensors() {
+    uint8_t count = 0;
+    const char **sensors = sensor_get_available_sensors(&count);
+    
+    TEST_ASSERT_NOT_NULL(sensors);
+    TEST_ASSERT_GREATER_THAN(0, count);
+    TEST_ASSERT_NOT_NULL(sensors[0]);
+}
+
+// Test: Verify sensor data validation with valid data
+void test_sensor_data_is_valid_true() {
+    sensor_data_t data = {
+        .temperature_celsius = 25.0f,
+        .humidity_percent = 60.0f,
+        .timestamp = 1000,
+        .quality_flags = 0xC0  // Bit 7 and 6 set (both valid)
+    };
+    
+    TEST_ASSERT_TRUE_MESSAGE(sensor_data_is_valid(&data), "Valid data should pass validation");
+}
+
+// Test: Verify sensor data validation with invalid temperature
+void test_sensor_data_is_valid_false_temp() {
+    sensor_data_t data = {
+        .temperature_celsius = 25.0f,
+        .humidity_percent = 60.0f,
+        .timestamp = 1000,
+        .quality_flags = 0x40  // Only humidity valid
+    };
+    
+    TEST_ASSERT_FALSE_MESSAGE(sensor_data_is_valid(&data), "Invalid temp should fail validation");
+}
+
+// Test: Verify NULL pointer handling
+void test_sensor_data_is_valid_null() {
+    TEST_ASSERT_FALSE_MESSAGE(sensor_data_is_valid(nullptr), "NULL data should fail validation");
+}
+
+// Test: Check status to string conversion
+void test_sensor_status_to_string() {
+    TEST_ASSERT_EQUAL_STRING("OK", sensor_status_to_string(SENSOR_OK));
+    TEST_ASSERT_EQUAL_STRING("Initialization Error", sensor_status_to_string(SENSOR_ERROR_INIT));
+    TEST_ASSERT_EQUAL_STRING("Communication Error", sensor_status_to_string(SENSOR_ERROR_COMM));
+    TEST_ASSERT_EQUAL_STRING("Timeout", sensor_status_to_string(SENSOR_ERROR_TIMEOUT));
+}
+
+// ============================================================================
+// I2C DRIVER TESTS (Peripheral Layer)
+// ============================================================================
+
+// Test: I2C status to string conversion
+void test_i2c_status_to_string() {
+    TEST_ASSERT_EQUAL_STRING("OK", i2c_status_to_string(I2C_OK));
+    TEST_ASSERT_EQUAL_STRING("Timeout", i2c_status_to_string(I2C_ERROR_TIMEOUT));
+    TEST_ASSERT_EQUAL_STRING("Invalid Parameter", i2c_status_to_string(I2C_ERROR_INVALID_PARAM));
+}
+
+// Test: I2C initialization with NULL config
+void test_i2c_init_null() {
+    i2c_status_t status = i2c_init(nullptr);
+    TEST_ASSERT_EQUAL_MESSAGE(I2C_ERROR_INVALID_PARAM, status, "NULL config should return error");
+}
+
+// Test: I2C write with NULL data pointer
+void test_i2c_write_null() {
+    i2c_status_t status = i2c_write(0x44, nullptr, 2);
+    TEST_ASSERT_EQUAL_MESSAGE(I2C_ERROR_INVALID_PARAM, status, "NULL data should return error");
+}
+
+// Test: I2C read with NULL buffer
+void test_i2c_read_null() {
+    i2c_status_t status = i2c_read(0x44, nullptr, 6);
+    TEST_ASSERT_EQUAL_MESSAGE(I2C_ERROR_INVALID_PARAM, status, "NULL buffer should return error");
+}
+
+// ============================================================================
+// SYSTEM MANAGER TESTS (Application Layer)
+// ============================================================================
+
+// Test: System uptime increases
+void test_system_uptime() {
+    System test_system;
+    uint32_t uptime1 = test_system.getUptime();
+    delay(100);
+    uint32_t uptime2 = test_system.getUptime();
+    
+    TEST_ASSERT_GREATER_OR_EQUAL_MESSAGE(uptime1, uptime2, "Uptime should increase or stay same");
+}
+
+// Test: Measurement count starts at zero
+void test_system_measurement_count_initial() {
+    System fresh_system;
+    TEST_ASSERT_EQUAL_MESSAGE(0, fresh_system.getMeasurementCount(), "Initial count should be 0");
+}
+
+// Test: System stop doesn't crash
+void test_system_stop() {
+    System temp_system;
+    temp_system.stop();  // Should not crash
+    TEST_PASS_MESSAGE("Stop should complete without crash");
+}
+
+// ============================================================================
+// MAIN TEST RUNNER
+// ============================================================================
+
+void setUp(void) {
+    // Called before each test
+}
+
+void tearDown(void) {
+    // Called after each test
+}
+
+void setup() {
+    delay(2000);  // Wait for board to stabilize
+    
+    Serial.begin(115200);
+    
+    UNITY_BEGIN();
+    
+    // === Sensor Interface Tests ===
+    RUN_TEST(test_sensor_get_interface_valid);
+    RUN_TEST(test_sensor_get_interface_invalid);
+    RUN_TEST(test_sensor_get_available_sensors);
+    RUN_TEST(test_sensor_data_is_valid_true);
+    RUN_TEST(test_sensor_data_is_valid_false_temp);
+    RUN_TEST(test_sensor_data_is_valid_null);
+    RUN_TEST(test_sensor_status_to_string);
+    
+    // === I2C Driver Tests ===
+    RUN_TEST(test_i2c_status_to_string);
+    RUN_TEST(test_i2c_init_null);
+    RUN_TEST(test_i2c_write_null);
+    RUN_TEST(test_i2c_read_null);
+    
+    // === System Manager Tests ===
+    RUN_TEST(test_system_uptime);
+    RUN_TEST(test_system_measurement_count_initial);
+    RUN_TEST(test_system_stop);
+    
+    UNITY_END();
+}
+
+void loop() {
+    // Tests run once in setup()
+}
+
