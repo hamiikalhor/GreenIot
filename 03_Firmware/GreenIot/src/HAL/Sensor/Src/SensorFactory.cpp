@@ -12,18 +12,17 @@
 
 #include <map>
 #include <functional>
+#include <memory>
 
 std::unique_ptr<ISensor> SensorFactory::create(const std::string& name) {
-    // Sensor creation map
-    static const std::map<std::string, std::function<std::unique_ptr<ISensor>()>> creators = {
-        {"SHT31", []() { return std::make_unique<SHT31Sensor>(); }},
-        // {"AHT20", []() { return std::make_unique<AHT20Sensor>(); }},  // Add when implemented
-    };
-    
-    auto it = creators.find(name);
-    if (it != creators.end()) {
-        return it->second();
+    // Simple factory implementation (compatible with C++11)
+    if (name == "SHT31") {
+        return std::unique_ptr<ISensor>(new SHT31Sensor());
     }
+    // Add more sensors here when implemented
+    // if (name == "AHT20") {
+    //     return std::unique_ptr<ISensor>(new AHT20Sensor());
+    // }
     
     return nullptr;
 }

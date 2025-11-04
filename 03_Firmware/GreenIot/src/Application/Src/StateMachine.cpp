@@ -63,6 +63,13 @@ void StateMachine::run() {
 void StateMachine::handleInit() {
     ESP_LOGI(TAG, "STATE: INIT");
     
+    // Check wake-up cause
+    WakeupSource wakeup_cause = PowerManager::getInstance().getWakeupCause();
+    ESP_LOGI(TAG, "Wake-up cause: %s", 
+             wakeup_cause == WakeupSource::TIMER ? "Timer" :
+             wakeup_cause == WakeupSource::BUTTON ? "Button" :
+             wakeup_cause == WakeupSource::POWER_ON ? "Power On" : "Unknown");
+    
     // Initialize I2C
     I2CConfig i2c_config;
     i2c_config.sda_pin = 8;
@@ -77,7 +84,13 @@ void StateMachine::handleInit() {
     
     // Initialize Power Manager
     PowerConfig power_config;
+    power_config.deep_sleep_duration_sec = m_config.measurement_interval_sec;  // Sleep between measurements
+    power_config.enable_sensor_power_control = true;
+    power_config.sensor_power_pin = 10;  // GPIO 10 for sensor power
     PowerManager::getInstance().init(power_config);
+    
+    // Turn sensor power on for initialization
+    PowerManager::getInstance().sensorPowerOn();
     
     // Initialize BLE Mesh
     BLEMeshConfig mesh_config;
@@ -150,6 +163,12 @@ void StateMachine::handleIdle() {
 void StateMachine::handleMeasure() {
     ESP_LOGI(TAG, "STATE: MEASURE");
     
+    // Ensure sensor is powered on
+    if (!PowerManager::getInstance().isSensorPowered()) {
+        PowerManager::getInstance().sensorPowerOn();
+        vTaskDelay(pdMS_TO_TICKS(50));  // Wait for sensor to stabilize
+    }
+    
     if (!m_sensor) {
         ESP_LOGE(TAG, "Sensor not initialized");
         transitionTo(SystemState::ERROR);
@@ -194,7 +213,12 @@ void StateMachine::handleMeasure() {
     if ((now - m_last_transmission_time) >= (m_config.transmission_interval_sec * 1000)) {
         transitionTo(SystemState::TRANSMIT);
     } else {
-        transitionTo(SystemState::IDLE);
+        // After measurement, go to sleep if auto-sleep enabled
+        if (PowerManager::getInstance().isAutoSleepEnabled()) {
+            transitionTo(SystemState::SLEEP);
+        } else {
+            transitionTo(SystemState::IDLE);
+        }
     }
 }
 
@@ -230,16 +254,35 @@ void StateMachine::handleTransmit() {
     
     m_last_transmission_time = getUptime();
     
-    transitionTo(SystemState::IDLE);
+    // After transmission, enter sleep mode
+    transitionTo(SystemState::SLEEP);
 }
 
 void StateMachine::handleSleep() {
-    ESP_LOGI(TAG, "STATE: SLEEP (deep sleep not implemented yet)");
+    ESP_LOGI(TAG, "STATE: SLEEP");
     
-    // For now, just light sleep
-    PowerManager::getInstance().enterLightSleep(1000);
+    // Calculate sleep duration based on measurement interval
+    uint32_t sleep_duration_sec = m_config.measurement_interval_sec;
     
-    transitionTo(SystemState::IDLE);
+    // Update power statistics before sleep
+    uint32_t now = getUptime();
+    uint32_t active_time = now - m_last_measurement_time;
+    PowerManager::getInstance().updatePowerStats(active_time, sleep_duration_sec * 1000);
+    
+    // Log power statistics
+    PowerStats stats = PowerManager::getInstance().getPowerStats();
+    ESP_LOGI(TAG, "Power Statistics:");
+    ESP_LOGI(TAG, "  Average current: %.2f µA", stats.avg_current_ua);
+    ESP_LOGI(TAG, "  Active current: %.2f mA", stats.active_current_ma);
+    ESP_LOGI(TAG, "  Sleep current: %.2f µA", stats.sleep_current_ua);
+    ESP_LOGI(TAG, "  Wake-up count: %u", (unsigned int)stats.wakeup_count);
+    ESP_LOGI(TAG, "  Estimated battery life: %.1f days", stats.estimated_battery_life_days);
+    
+    // Enter deep sleep (device will reset on wake-up)
+    ESP_LOGI(TAG, "Entering deep sleep for %d seconds...", (int)sleep_duration_sec);
+    PowerManager::getInstance().enterDeepSleep(sleep_duration_sec);
+    
+    // NOTE: Execution NEVER reaches here (device resets on wakeup)
 }
 
 void StateMachine::handleError() {

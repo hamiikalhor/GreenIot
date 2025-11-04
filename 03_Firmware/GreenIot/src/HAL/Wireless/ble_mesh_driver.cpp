@@ -16,6 +16,8 @@
 #include "HAL/Wireless/ble_mesh_interface.h"
 #include "esp_log.h"
 #include "esp_system.h"
+#include "esp_timer.h"
+#include <Arduino.h>
 #include <string.h>
 
 // ============================================================================
