@@ -596,6 +596,36 @@ typedef struct {
 
 ## 🧪 Testing
 
+### Quick Start
+
+```bash
+# Run mock tests (no hardware required) ✅ 15/15 passing
+./run_tests.sh mock
+
+# Run hardware tests (requires ESP32-C3)
+./run_tests.sh hw
+
+# Run all tests
+./run_tests.sh all
+```
+
+**Test Status:**
+- ✅ **Mock Tests:** 15/15 passing in ~2 seconds (PC-based, no hardware)
+- ⏳ **Hardware Tests:** Pending ESP32-C3 availability
+- ⏳ **Multi-Node Tests:** Pending hardware (requires 3-5 nodes)
+
+### Complete Testing Documentation
+
+For comprehensive testing procedures, see **[`docs/TESTING.md`](docs/TESTING.md)**
+
+**Includes:**
+- Mock tests (PC-based, no hardware)
+- Hardware tests (ESP32-C3)
+- Multi-node testing (BLE Mesh relay)
+- Provisioning procedures
+- Log analysis tools
+- Troubleshooting guide
+
 ### Serial Monitor Test
 
 After uploading, open serial monitor at **115200 baud**. You should see:
@@ -682,6 +712,43 @@ Basil (Ocimum basilicum) physiological response times:
 - **1 minute**: Excessive data, battery life ~2 months
 - **5 minutes**: ✅ Optimal balance, battery life ~7 months
 - **15 minutes**: Misses rapid microclimate changes
+
+---
+
+## 📚 Documentation
+
+### Documentation Structure
+
+```
+03_Firmware/GreenIot/
+├── README.md                           # This file - main entry point
+├── docs/
+│   ├── BLE_MESH_SENSOR_MODEL.md       # BLE Mesh implementation (21KB)
+│   ├── TESTING.md                      # Complete testing guide (16KB)
+│   └── HARDWARE_CHECKLIST.md          # Hardware test checklist (3KB)
+├── test/
+│   └── README.md                       # Test suite overview (2KB)
+└── tools/
+    └── analyze_mesh_logs.py            # Log analysis tool
+```
+
+### Quick Links
+
+| Document | Description | Size |
+|----------|-------------|------|
+| **[README.md](README.md)** | Main project documentation | 24KB |
+| **[docs/BLE_MESH_SENSOR_MODEL.md](docs/BLE_MESH_SENSOR_MODEL.md)** | BLE Mesh technical implementation | 21KB |
+| **[docs/TESTING.md](docs/TESTING.md)** | Complete testing procedures | 16KB |
+| **[docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md)** | Print-friendly test checklist | 3KB |
+| **[test/README.md](test/README.md)** | Test suite overview | 2KB |
+
+### API Documentation
+
+See inline Doxygen comments in header files:
+- `include/HAL/Wireless/ble_mesh_interface.h` - BLE Mesh interface
+- `include/HAL/Wireless/ble_mesh_config.h` - Configuration constants
+- `include/HAL/Sensor/sensor_interface.h` - Sensor abstraction
+- `include/Core/system.h` - System state machine
 
 ---
 
