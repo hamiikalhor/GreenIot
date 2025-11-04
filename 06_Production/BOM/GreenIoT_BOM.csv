@@ -1,0 +1,75 @@
+Comment,Description,Designator,Footprint,LibRef,Quantity,Unit Price (IRR),Total Price (IRR),Manufacturer,Part Number,Datasheet,Notes
+
+"ESP32-C3-DevKitM-1","WiFi/BLE Module - ESP32-C3 RISC-V 160MHz 320KB RAM 4MB Flash","U1","ESP32-C3-DEVKITM-1","ESP32-C3-DevKitM-1","1","250000","250000","Espressif","ESP32-C3-DevKitM-1","https://www.espressif.com/sites/default/files/documentation/esp32-c3-devkitm-1_datasheet_en.pdf","Main MCU with BLE 5.0"
+
+"SHT31-DIS-B","Temperature & Humidity Sensor I2C ±0.3°C ±2% RH","U2","DFN-8-2.5x2.5","SHT31-DIS-B","1","180000","180000","Sensirion","SHT31-DIS-B","https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Sensirion_Humidity_Sensors_SHT3x_Datasheet_digital.pdf","Primary sensor @ I2C 0x44"
+
+"MCP1700-3302E/TO","Ultra-Low Quiescent Current LDO 3.3V 250mA Iq=1.6μA","U3","SOT-23","MCP1700-3302E","1","15000","15000","Microchip","MCP1700-3302E/TO","https://ww1.microchip.com/downloads/en/DeviceDoc/20001826E.pdf","Ultra-low power LDO - 1.6μA quiescent"
+
+"18650 Li-Ion Battery","Rechargeable Battery 3.7V 3000mAh","BAT1","18650-HOLDER","18650 Li-Ion","1","150000","150000","Generic","18650-3000mAh","","Primary power source - 5-7 year life"
+
+"MCP73831T-2ACI/OT","Li-Ion/Li-Po Charge Controller 500mA SOT-23-5","U4","SOT-23-5","MCP73831","1","18000","18000","Microchip","MCP73831T-2ACI/OT","https://ww1.microchip.com/downloads/en/DeviceDoc/MCP73831-Family-Data-Sheet-DS20001984H.pdf","Battery charger with thermal regulation"
+
+"100nF 50V X7R","Ceramic Capacitor Decoupling","C1, C2, C3, C4, C5, C6","C0603","Capacitor","6","500","3000","Generic","","","Decoupling caps"
+
+"10uF 16V X7R","Ceramic Capacitor","C7, C8","C0805","Capacitor","2","1500","3000","Generic","","","Power filtering"
+
+"22uF 16V X7R","Ceramic Capacitor","C9, C10","C0805","Capacitor","2","2000","4000","Generic","","","Bulk capacitance"
+
+"1uF 50V X7R","Ceramic Capacitor","C11, C12","C0603","Capacitor","2","800","1600","Generic","","","I2C filtering"
+
+"10K 1% 0.1W","Resistor Pull-up","R1, R2","R0603","Resistor","2","300","600","Generic","","","I2C pull-ups (SDA, SCL)"
+
+"10K 1% 0.1W","Resistor Voltage Divider","R3, R4","R0603","Resistor","2","300","600","Generic","","","Battery voltage sensing"
+
+"1K 5% 0.1W","Resistor LED Current Limiting","R5","R0603","Resistor","1","200","200","Generic","","","Status LED resistor"
+
+"2K 1% 0.1W","Resistor PROG","R6","R0603","Resistor","1","300","300","Generic","","","MCP73831 charge current setting (500mA)"
+
+"4.7K 1% 0.1W","Resistor Pull-up","R7","R0603","Resistor","1","300","300","Generic","","","Boot/EN pull-up"
+
+"Green LED 0603","LED Status Indicator","D1","LED0603","LED","1","500","500","Generic","","","Power/status indicator"
+
+"BAT54C","Schottky Diode 200mA 30V","D2","SOT-23","Diode","1","1200","1200","Generic","BAT54C","","Reverse polarity protection"
+
+"SS34","Schottky Diode 3A 40V","D3","SMA","Diode","1","2000","2000","Generic","SS34","","Input protection"
+
+"Switch SPDT","Slide Switch Power On/Off","SW1","SWITCH-SPDT-SMD","Switch","1","3000","3000","Generic","","","Power switch"
+
+"Switch SPST-NO","Tactile Switch Reset","SW2","SWITCH-TACT-SMD","Switch","1","1000","1000","Generic","","","Reset button"
+
+"JST-PH-2","Battery Connector 2-Pin","J1","JST-PH-2","Connector","1","2000","2000","JST","B2B-PH-K-S","","Battery connection"
+
+"USB Type-C","USB Connector Type-C Receptacle","J2","USB-C-SMD","Connector","1","8000","8000","Generic","","","Charging/programming port"
+
+"Header 1x4 2.54mm","Pin Header Male","J3","HDR1X4","Header","1","1000","1000","Generic","","","I2C/Debug breakout"
+
+"Ferrite Bead 600R@100MHz","EMI Suppression","FB1, FB2","L0603","Ferrite Bead","2","500","1000","Generic","","","Power line filtering"
+
+"PCB Custom","Custom PCB 50x40mm 2-Layer FR4","PCB1","","PCB","1","80000","80000","","","","Custom PCB fabrication"
+
+"Enclosure ABS","Plastic Enclosure 60x50x25mm","ENC1","","Enclosure","1","35000","35000","Generic","","","Weatherproof housing"
+
+"Screws M2.5","Mounting Hardware M2.5x6mm","SCREW1","","Hardware","4","200","800","Generic","","","PCB mounting screws"
+
+"Standoffs M2.5","PCB Standoffs M2.5 5mm","STANDOFF1","","Hardware","4","300","1200","Generic","","","PCB standoffs"
+
+"Gasket Rubber","Sealing Gasket","GASKET1","","Gasket","1","5000","5000","Generic","","","Enclosure seal"
+
+"Thermal Pad","Thermal Interface Material","PAD1","","Thermal","1","2000","2000","Generic","","","Heat dissipation"
+
+"Antenna PCB 2.4GHz","PCB Antenna BLE","ANT1","","Antenna","1","8000","8000","Generic","","","Onboard PCB antenna"
+
+"Heatshrink Tubing","Wire Protection","TUBE1","","Misc","0.5","2000","1000","Generic","","","Cable management (per meter)"
+
+"Wire 24AWG","Hookup Wire Red/Black","WIRE1","","Wire","0.2","5000","1000","Generic","","","Internal wiring (per meter)"
+
+"","","","","","","","","","","",""
+"Total Cost per Node","","","","","","","939500","","","","~$18.79 USD"
+
+"Power Consumption Analysis:","","","","","","","","","","",""
+"- Deep Sleep: ~10μA (ESP32-C3) + 1.6μA (MCP1700) + 0.5μA (SHT31) = ~12μA","","","","","","","","","","",""
+"- Active Measurement: ~40mA for 2 seconds every 15 minutes","","","","","","","","","","",""
+"- Average Current: ~15μA","","","","","","","","","","",""
+"- Battery Life: 3000mAh / 0.015mA = 200,000 hours = ~22 years theoretical","","","","","","","","","","",""
+"- Practical Battery Life: 5-7 years (accounting for self-discharge)","","","","","","","","","","",""
