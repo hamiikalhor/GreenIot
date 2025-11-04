@@ -3,13 +3,17 @@
  * @brief System Manager Implementation
  * 
  * @author GreenIoT Vertical Farming Project
- * @date 2025-11-03
+ * @date 2025-11-04
+ * @version 3.0 (BLE Mesh Integration)
  */
 
 #include "system.h"
 #include <Arduino.h>
 #include "Drivers/i2c_driver.h"
+#include "HAL/Wireless/ble_mesh_config.h"
 #include "esp_log.h"
+#include <string.h>
+#include <math.h>
 
 // ============================================================================
 // Configuration
@@ -26,8 +30,14 @@ static const char *TAG = "System";
 #define I2C_FREQUENCY_HZ 100000
 #define I2C_TIMEOUT_MS 100
 
-// Sampling interval - 5 minutes
-#define SAMPLING_INTERVAL_MS 300000
+// Sampling interval - 5 minutes (matches BLE Mesh publish interval)
+#define SAMPLING_INTERVAL_MS BLE_MESH_PUBLISH_INTERVAL_MS
+
+// BLE Mesh Publishing interval - 5 minutes
+#define MESH_PUBLISH_INTERVAL_MS BLE_MESH_PUBLISH_INTERVAL_MS
+
+// Enable BLE Mesh (set to false to disable for testing)
+#define ENABLE_BLE_MESH true
 
 // ============================================================================
 // Public Methods
@@ -35,10 +45,14 @@ static const char *TAG = "System";
 
 System::System() 
     : sensor(nullptr)
+    , ble_mesh_enabled(ENABLE_BLE_MESH)
+    , has_last_sensor_data(false)
     , measurement_count(0)
     , last_measurement_time(0)
+    , last_publish_time(0)
     , initialized(false)
 {
+    memset(&last_sensor_data, 0, sizeof(sensor_data_t));
 }
 
 System::~System() {
@@ -49,14 +63,15 @@ bool System::init() {
     ESP_LOGI(TAG, "\n╔══════════════════════════════════════════╗");
     ESP_LOGI(TAG, "║   GreenIoT Vertical Farming Project      ║");
     ESP_LOGI(TAG, "║   Environmental Monitoring Sensor Node   ║");
-    ESP_LOGI(TAG, "║   Layered Architecture Implementation    ║");
+    ESP_LOGI(TAG, "║   BLE Mesh Sensor Server                 ║");
     ESP_LOGI(TAG, "╚══════════════════════════════════════════╝\n");
     
     ESP_LOGI(TAG, "Architecture Layers:");
-    ESP_LOGI(TAG, "  [4] Application Layer    ← System Manager");
-    ESP_LOGI(TAG, "  [3] HAL Layer            ← sensor_interface");
+    ESP_LOGI(TAG, "  [5] Application Layer    ← System Manager");
+    ESP_LOGI(TAG, "  [4] Service Layer        ← BLE Mesh Communication");
+    ESP_LOGI(TAG, "  [3] HAL Layer            ← sensor_interface + ble_mesh_interface");
     ESP_LOGI(TAG, "  [2] Peripheral Driver    ← i2c_driver");
-    ESP_LOGI(TAG, "  [1] Hardware Layer       ← ESP32-C3 / Wire.h\n");
+    ESP_LOGI(TAG, "  [1] Hardware Layer       ← ESP32-C3 / Wire.h / BLE 5.0\n");
     
     // Initialize peripherals
     if (!initPeripherals()) {
@@ -70,9 +85,23 @@ bool System::init() {
         return false;
     }
     
+    // Initialize BLE Mesh
+    if (ble_mesh_enabled) {
+        if (!initBLEMesh()) {
+            ESP_LOGW(TAG, "BLE Mesh initialization failed - continuing without mesh");
+            ble_mesh_enabled = false;
+        }
+    } else {
+        ESP_LOGI(TAG, "BLE Mesh disabled - operating in standalone mode");
+    }
+    
     ESP_LOGI(TAG, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     ESP_LOGI(TAG, "Sampling Interval: %lu seconds (%.1f minutes)", 
              SAMPLING_INTERVAL_MS / 1000, SAMPLING_INTERVAL_MS / 60000.0f);
+    if (ble_mesh_enabled) {
+        ESP_LOGI(TAG, "Publishing Interval: %lu seconds (%.1f minutes)",
+                 MESH_PUBLISH_INTERVAL_MS / 1000, MESH_PUBLISH_INTERVAL_MS / 60000.0f);
+    }
     ESP_LOGI(TAG, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
     
     // Perform initial measurement
@@ -118,6 +147,21 @@ uint32_t System::getUptime() const {
 
 uint32_t System::getMeasurementCount() const {
     return measurement_count;
+}
+
+bool System::isMeshProvisioned() const {
+    if (!ble_mesh_enabled) {
+        return false;
+    }
+    return ble_mesh_is_provisioned();
+}
+
+ble_mesh_status_t System::getMeshStatus() const {
+    ble_mesh_status_t status = {0};
+    if (ble_mesh_enabled) {
+        ble_mesh_get_status(&status);
+    }
+    return status;
 }
 
 // ============================================================================
@@ -303,6 +347,63 @@ void System::printSensorData(const sensor_data_t *data) {
     ESP_LOGI(TAG, "");  // Blank line
 }
 
+bool System::initBLEMesh() {
+    ESP_LOGI(TAG, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    ESP_LOGI(TAG, "Initializing BLE Mesh Sensor Server...");
+    ESP_LOGI(TAG, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    
+    // Get MAC address for device name
+    uint8_t mac[6];
+    esp_efuse_mac_get_default(mac);
+    
+    // Configure BLE Mesh
+    ble_mesh_config_t config = {0};
+    
+    // Generate device name
+    snprintf(config.device_name, BLE_MESH_DEV_NAME_MAX_LEN, 
+             "GreenIoT-%02X%02X%02X", mac[3], mac[4], mac[5]);
+    
+    // Set company/product IDs
+    config.company_id = BLE_MESH_COMPANY_ID_ESPRESSIF;
+    config.product_id = 0x0001;  // GreenIoT Sensor Node
+    config.version_id = 0x0001;  // Version 1.0
+    
+    // Enable provisioning methods
+    config.enable_pb_adv = true;   // PB-ADV (Advertising Bearer)
+    config.enable_pb_gatt = true;  // PB-GATT (GATT Bearer)
+    
+    // Enable Low Power Node
+    config.enable_lpn = true;
+    config.lpn_poll_interval_ms = BLE_MESH_LPN_POLL_INTERVAL_MS;
+    
+    // Set features
+    config.features = 0;
+    config.features |= BLE_MESH_FEATURE_LOW_POWER;  // LPN enabled
+    config.features |= BLE_MESH_FEATURE_PROXY;      // GATT Proxy for provisioning
+    
+    // Initialize BLE Mesh
+    ble_mesh_err_t status = ble_mesh_init(&config);
+    
+    if (status != BLE_MESH_OK) {
+        ESP_LOGE(TAG, "BLE Mesh initialization failed: %s", 
+                 ble_mesh_status_to_string(status));
+        return false;
+    }
+    
+    // Enable provisioning beacon
+    status = ble_mesh_enable_provisioning();
+    if (status != BLE_MESH_OK) {
+        ESP_LOGW(TAG, "Failed to enable provisioning: %s", 
+                 ble_mesh_status_to_string(status));
+    }
+    
+    ESP_LOGI(TAG, "✓ BLE Mesh Sensor Server initialized");
+    ESP_LOGI(TAG, "Device Name: %s", config.device_name);
+    ESP_LOGI(TAG, "");
+    
+    return true;
+}
+
 void System::performMeasurement() {
     measurement_count++;
     last_measurement_time = millis();
@@ -337,5 +438,82 @@ void System::performMeasurement() {
     
     // Print data
     printSensorData(&data);
+    
+    // Check if we should publish to mesh
+    if (ble_mesh_enabled) {
+        uint32_t current_time = millis();
+        bool time_to_publish = (current_time - last_publish_time) >= MESH_PUBLISH_INTERVAL_MS;
+        bool significant_change = shouldPublishImmediately(&data);
+        
+        if (time_to_publish || significant_change) {
+            if (significant_change) {
+                ESP_LOGI(TAG, "▶ Significant environmental change detected - publishing immediately!");
+            }
+            publishToMesh(&data);
+            last_publish_time = current_time;
+        }
+    }
+    
+    // Store last sensor data for comparison
+    memcpy(&last_sensor_data, &data, sizeof(sensor_data_t));
+    has_last_sensor_data = true;
+}
+
+void System::publishToMesh(const sensor_data_t *data) {
+    if (!ble_mesh_enabled) {
+        return;
+    }
+    
+    // Prepare mesh sensor data
+    mesh_sensor_data_t mesh_data;
+    mesh_data.temperature_celsius = data->temperature_celsius;
+    mesh_data.humidity_percent = data->humidity_percent;
+    mesh_data.battery_level = 95;  // TODO: Implement battery monitoring
+    mesh_data.timestamp = data->timestamp;
+    
+    // Publish to mesh
+    ble_mesh_err_t status = ble_mesh_publish_sensor_data(&mesh_data);
+    
+    if (status != BLE_MESH_OK) {
+        ESP_LOGE(TAG, "Failed to publish sensor data: %s", 
+                 ble_mesh_status_to_string(status));
+    }
+}
+
+bool System::shouldPublishImmediately(const sensor_data_t *data) {
+    if (!has_last_sensor_data) {
+        return false;  // No previous data to compare
+    }
+    
+    // Check temperature change
+    float temp_change = fabsf(data->temperature_celsius - last_sensor_data.temperature_celsius);
+    if (temp_change >= BLE_MESH_TEMP_CHANGE_THRESHOLD) {
+        ESP_LOGW(TAG, "Temperature changed by %.2f°C (threshold: %.1f°C)", 
+                 temp_change, BLE_MESH_TEMP_CHANGE_THRESHOLD);
+        return true;
+    }
+    
+    // Check humidity change
+    float hum_change = fabsf(data->humidity_percent - last_sensor_data.humidity_percent);
+    if (hum_change >= BLE_MESH_HUM_CHANGE_THRESHOLD) {
+        ESP_LOGW(TAG, "Humidity changed by %.1f%% (threshold: %.1f%%)", 
+                 hum_change, BLE_MESH_HUM_CHANGE_THRESHOLD);
+        return true;
+    }
+    
+    // Check critical thresholds for basil
+    if (data->temperature_celsius < BASIL_TEMP_MIN_CRITICAL || 
+        data->temperature_celsius > BASIL_TEMP_MAX_CRITICAL) {
+        ESP_LOGE(TAG, "CRITICAL: Temperature outside safe range for basil!");
+        return true;
+    }
+    
+    if (data->humidity_percent < BASIL_HUM_MIN_CRITICAL || 
+        data->humidity_percent > BASIL_HUM_MAX_CRITICAL) {
+        ESP_LOGE(TAG, "CRITICAL: Humidity outside safe range for basil!");
+        return true;
+    }
+    
+    return false;  // No significant change
 }
 

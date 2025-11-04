@@ -6,8 +6,8 @@
  * operations. It provides a clean interface to the main application.
  * 
  * @author GreenIoT Vertical Farming Project
- * @date 2025-11-03
- * @version 2.1 (System Architecture)
+ * @date 2025-11-04
+ * @version 3.0 (BLE Mesh Integration)
  */
 
 #ifndef SYSTEM_H
@@ -15,6 +15,7 @@
 
 #include <stdint.h>
 #include "HAL/Sensor/sensor_interface.h"
+#include "HAL/Wireless/ble_mesh_interface.h"
 
 /**
  * @brief System Manager Class
@@ -73,14 +74,34 @@ public:
      * @return Number of measurements performed
      */
     uint32_t getMeasurementCount() const;
+    
+    /**
+     * @brief Get BLE Mesh provisioning status
+     * @return true if provisioned, false otherwise
+     */
+    bool isMeshProvisioned() const;
+    
+    /**
+     * @brief Get BLE Mesh status
+     * @return BLE Mesh status structure
+     */
+    ble_mesh_status_t getMeshStatus() const;
 
 private:
     // Sensor interface
     const sensor_interface_t *sensor;
     
+    // BLE Mesh enabled flag
+    bool ble_mesh_enabled;
+    
+    // Last sensor readings (for adaptive publishing)
+    sensor_data_t last_sensor_data;
+    bool has_last_sensor_data;
+    
     // Measurement tracking
     uint32_t measurement_count;
     uint32_t last_measurement_time;
+    uint32_t last_publish_time;
     
     // System state
     bool initialized;
@@ -98,6 +119,12 @@ private:
     bool initSensor();
     
     /**
+     * @brief Initialize BLE Mesh stack
+     * @return true if successful
+     */
+    bool initBLEMesh();
+    
+    /**
      * @brief Print sensor information
      */
     void printSensorInfo(const sensor_info_t *info);
@@ -111,6 +138,17 @@ private:
      * @brief Perform a single measurement cycle
      */
     void performMeasurement();
+    
+    /**
+     * @brief Publish sensor data to BLE Mesh network
+     */
+    void publishToMesh(const sensor_data_t *data);
+    
+    /**
+     * @brief Check if conditions warrant immediate publishing
+     * @return true if significant change detected
+     */
+    bool shouldPublishImmediately(const sensor_data_t *data);
 };
 
 #endif // SYSTEM_H

@@ -21,6 +21,9 @@
 - [Configuration](#configuration)
 - [API Documentation](#api-documentation)
 - [Testing](#testing)
+  - [Quick Start - Run Tests](#quick-start---run-tests)
+  - [Mock Tests (No Hardware)](#mock-tests-no-hardware)
+  - [Hardware Tests](#hardware-tests)
 
 ---
 
@@ -595,6 +598,67 @@ typedef struct {
 ---
 
 ## 🧪 Testing
+
+### Quick Start - Run Tests
+
+**Easy test runner script** (recommended):
+
+```bash
+# Run mock tests (no hardware required)
+./run_tests.sh mock
+
+# Run hardware tests (requires ESP32-C3)
+./run_tests.sh hw
+
+# Run all tests
+./run_tests.sh all
+
+# Show help
+./run_tests.sh help
+```
+
+### Mock Tests (No Hardware)
+
+**✅ 15/15 tests passing** - PC-based tests with full BLE Mesh mocking:
+
+```bash
+# Using PlatformIO directly
+platformio test -e native -f test_ble_mesh_with_mocks
+
+# Or use the script
+./run_tests.sh mock
+```
+
+**Test Coverage:**
+- ✅ Configuration validation (intervals, property IDs)
+- ✅ Initialization and deinitialization
+- ✅ Provisioning enable/disable
+- ✅ Sensor data publishing
+- ✅ Status management
+- ✅ Error handling
+- ✅ Factory reset
+- ✅ Full integration workflow
+
+**Duration:** ~2 seconds  
+**Platform:** Native (Mac/Linux/Windows)  
+**Hardware Required:** None!
+
+### Hardware Tests
+
+Tests on actual ESP32-C3 hardware:
+
+```bash
+# Upload and run tests
+platformio test -e esp32-c3-devkitm-1 -f test_ble_mesh
+
+# Or use the script
+./run_tests.sh hw
+```
+
+**Requirements:**
+- ESP32-C3-DevKitM-1
+- SHT31 sensor (optional for sensor tests)
+- USB connection
 
 ### Serial Monitor Test
 
