@@ -1,9 +1,17 @@
 /**
  * @file test_ble_mesh.cpp
- * @brief Unit Tests for BLE Mesh Sensor Server
+ * @brief Native Unit Tests for BLE Mesh Manager (HAL/Wireless Layer)
  * 
- * Tests for BLE Mesh functionality including:
- * - Stack initialization
+ * Tests the BLE Mesh stack initialization, provisioning, and configuration
+ * using mock implementations for native testing.
+ * 
+ * Test Coverage:
+ * - BLE Mesh stack initialization
+ * - Node UUID generation and configuration
+ * - Unicast address management
+ * - Provisioning enablement (PB-ADV / PB-GATT)
+ * - Sensor data transmission over mesh
+ * - Stack status management
  * - Sensor data publishing
  * - Property encoding/decoding
  * - Provisioning status
