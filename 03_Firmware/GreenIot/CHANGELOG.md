@@ -40,6 +40,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Light sleep mode (1mA)
   - Deep sleep mode (10µA)
   - 5-7 year battery life estimation
+  - **Issue #4: Deep Sleep & Wake-up Logic** ✅
+    - Periodic wake-up timer (RTC-based)
+    - GPIO sensor power pin control
+    - Current consumption measurement
+    - RTC memory state preservation
+    - Power statistics tracking
+    - Battery life estimation
 
 #### Application Logic
 - **StateMachine** - State-based control flow
