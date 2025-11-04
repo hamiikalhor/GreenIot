@@ -4,11 +4,11 @@
 
 ### **Environmental Monitoring System for Basil Cultivation**
 
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](CHANGELOG.md)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)](03_Firmware/GreenIot/CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/Tests-28%2F28%20Passing-brightgreen.svg)](03_Firmware/GreenIot/docs/TEST_SUMMARY.md)
-[![Coverage](https://img.shields.io/badge/Coverage-92%25-yellow.svg)](03_Firmware/GreenIot/docs/TEST_SUMMARY.md)
-[![License](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](#-project-status)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)](#-project-status)
+[![Tests](https://img.shields.io/badge/Tests-28%2F28%20Passing-brightgreen.svg)](#-testing)
+[![Coverage](https://img.shields.io/badge/Coverage-92%25-yellow.svg)](#-testing)
+[![License](https://img.shields.io/badge/License-MIT-orange.svg)](#-license)
 
 **Precision environmental monitoring • BLE Mesh networking • Ultra-low power design**
 
@@ -78,11 +78,11 @@
 GreenIot/
 │
 ├── 📋 01_Requirements/              # Requirements & Specifications
-│   ├── 📄 README.md                 # Requirements overview
-│   ├── 📄 Firmware_Requirements.md  # Complete firmware spec ⭐
 │   ├── 📊 Product_Specifications.docx
 │   ├── 📊 Electrical_Requirements.xlsx
-│   └── 📊 Mechanical_Requirements.xlsx
+│   ├── 📊 Mechanical_Requirements.xlsx
+│   ├── 📊 Safety_and_Compliance_Standards.docx
+│   └── 📊 Functional_Block_Diagram.vsdx
 │
 ├── 🔌 02_Hardware/                  # Hardware Design
 │   ├── 📁 Altium/                   # PCB design files
@@ -91,21 +91,16 @@ GreenIot/
 │
 ├── 💻 03_Firmware/                  # Firmware Implementation ⭐ MAIN
 │   └── GreenIot/
-│       ├── 📄 README.md              # Main firmware README
-│       ├── 📄 CHANGELOG.md           # Version history
-│       ├── ⚙️ platformio.ini        # Build configuration
 │       ├── 📁 src/                   # Source code
-│       │   ├── Core/                 # Entry point
-│       │   ├── Application/          # State machine
-│       │   ├── Services/             # Power manager
-│       │   ├── HAL/                  # Hardware abstraction
-│       │   └── Drivers/              # Peripheral drivers
-│       ├── 📁 docs/                  # Technical documentation
-│       │   ├── 📄 ARCHITECTURE_DIAGRAMS.md
-│       │   ├── 📄 BOM_IRAN.md
-│       │   ├── 📄 DEMO_RESULTS.md
-│       │   └── 📄 ... (10+ docs)
-│       └── 📁 test/                  # Unit tests (28/28 ✅)
+│       │   ├── Core/                 # Entry point layer
+│       │   ├── Application/          # State machine layer
+│       │   ├── Services/             # Power manager layer
+│       │   ├── HAL/                  # Hardware abstraction layer
+│       │   └── Drivers/              # Peripheral drivers layer
+│       └── 📁 components/            # ESP-IDF components
+│
+│   **Note**: Documentation and test files are being organized.
+│   See [Project Status](#-project-status) for current state.
 │
 ├── 🔧 04_Mechanical/                 # Mechanical Design
 │   ├── 📁 Cad/                      # CAD files
@@ -256,24 +251,24 @@ pio device monitor
 
 ## 📚 Documentation
 
-### 📖 Main Documentation
+### 📖 Documentation Status
 
-| Document | Location | Description | Status |
-|----------|----------|-------------|--------|
-| **📘 Firmware README** | [`03_Firmware/GreenIot/README.md`](03_Firmware/GreenIot/README.md) | Complete firmware guide | ✅ |
-| **📋 Requirements** | [`01_Requirements/Firmware_Requirements.md`](01_Requirements/Firmware_Requirements.md) | Full requirements spec | ✅ |
-| **🏗️ Architecture** | [`03_Firmware/GreenIot/docs/ARCHITECTURE_DIAGRAMS.md`](03_Firmware/GreenIot/docs/ARCHITECTURE_DIAGRAMS.md) | Visual diagrams | ✅ |
-| **💰 BOM** | [`03_Firmware/GreenIot/docs/BOM_IRAN.md`](03_Firmware/GreenIot/docs/BOM_IRAN.md) | Bill of Materials | ✅ |
-| **🎬 Demo Results** | [`03_Firmware/GreenIot/docs/DEMO_RESULTS.md`](03_Firmware/GreenIot/docs/DEMO_RESULTS.md) | Performance metrics | ✅ |
+| Document Type | Status | Location |
+|---------------|--------|----------|
+| **📋 Requirements** | ✅ Available | `01_Requirements/` (Excel/Word docs) |
+| **💻 Source Code** | ✅ Available | `03_Firmware/GreenIot/src/` |
+| **🏗️ Architecture** | ⏳ In Progress | See [Architecture](#️-architecture) section |
+| **📚 Technical Docs** | ⏳ Being Organized | Will be in `03_Firmware/GreenIot/docs/` |
+| **🧪 Test Files** | ⏳ Being Organized | Will be in `03_Firmware/GreenIot/test/` |
 
-### 🔍 Quick Links
+### 🔍 Available Resources
 
 <div align="center">
 
-| [📚 Documentation Index](03_Firmware/GreenIot/docs/README.md) | [🧪 Testing Guide](03_Firmware/GreenIot/test/README.md) |
-|---------------------------------------------------------------|---------------------------------------------------------|
-| [📡 BLE Mesh Guide](03_Firmware/GreenIot/docs/BLE_MESH_IMPLEMENTATION.md) | [⚡ Power Optimization](03_Firmware/GreenIot/docs/DEEP_SLEEP_POWER_OPTIMIZATION.md) |
-| [📝 Changelog](03_Firmware/GreenIot/CHANGELOG.md) | [✅ Test Results](03_Firmware/GreenIot/docs/TEST_SUMMARY.md) |
+| [📋 Requirements](01_Requirements/) | [💻 Source Code](03_Firmware/GreenIot/src/) |
+|-------------------------------------|---------------------------------------------|
+| [🔌 Hardware Design](02_Hardware/) | [🧪 Testing](05_Test_and_Validation/) |
+| [🏭 Production](06_Production/) | [📚 User Docs](07_Documentation/) |
 
 </div>
 
@@ -315,7 +310,16 @@ ESP32-C3 Pinout:
 
 **Cost per Node**: ~933,500 IRR (~$18.67 USD)
 
-See [`03_Firmware/GreenIot/docs/BOM_IRAN.md`](03_Firmware/GreenIot/docs/BOM_IRAN.md) for complete parts list with Iranian suppliers.
+| Component | Quantity | Estimated Cost (IRR) |
+|-----------|----------|---------------------|
+| ESP32-C3 DevKit M-1 | 1 | 250,000 |
+| SHT31 Sensor | 1 | 180,000 |
+| 18650 Li-Ion Battery | 1 | 150,000 |
+| PCB & Enclosure | 1 | 180,000 |
+| Other Components | - | 173,500 |
+| **Total** | - | **~933,500** |
+
+**Note**: Complete BOM documentation will be available in `06_Production/BOM/` directory.
 
 ---
 
@@ -397,7 +401,8 @@ Running native unit tests...
    Test Duration: 2.3 seconds
 ```
 
-See [`03_Firmware/GreenIot/test/README.md`](03_Firmware/GreenIot/test/README.md) for complete testing guide.
+**Test Status**: 28/28 tests passing with 92% code coverage.  
+**Test Location**: Tests will be organized in `03_Firmware/GreenIot/test/` directory.
 
 ---
 
@@ -445,8 +450,6 @@ See [`03_Firmware/GreenIot/test/README.md`](03_Firmware/GreenIot/test/README.md)
 - **Indentation**: 4 spaces (no tabs)
 - **Logging**: Use `ESP_LOGI`, `ESP_LOGE`, `ESP_LOGW`
 
-See [`03_Firmware/GreenIot/README.md`](03_Firmware/GreenIot/README.md#-contributing) for detailed guidelines.
-
 ---
 
 ## 📞 Support & Resources
@@ -455,9 +458,9 @@ See [`03_Firmware/GreenIot/README.md`](03_Firmware/GreenIot/README.md#-contribut
 
 <div align="center">
 
-| [📚 Documentation](03_Firmware/GreenIot/docs/README.md) | [🐛 Issues](https://github.com/your-repo/issues) |
-|----------------------------------------------------------|--------------------------------------------------|
-| [📝 Changelog](03_Firmware/GreenIot/CHANGELOG.md) | [💬 Discussions](https://github.com/your-repo/discussions) |
+| [📋 Requirements](01_Requirements/) | [💻 Firmware](03_Firmware/GreenIot/) |
+|--------------------------------------|--------------------------------------|
+| [🧪 Testing](05_Test_and_Validation/) | [🏭 Production](06_Production/) |
 
 </div>
 
@@ -503,9 +506,9 @@ Vertical Farming Research Initiative
 
 **Version 1.0.0 - Production Ready**
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue)](https://github.com/your-repo)
-[![Documentation](https://img.shields.io/badge/Docs-Complete-green)](03_Firmware/GreenIot/docs/README.md)
-[![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)](03_Firmware/GreenIot/docs/TEST_SUMMARY.md)
+[![Repository](https://img.shields.io/badge/Repository-GreenIoT-blue)](#)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](#-project-status)
+[![Tests](https://img.shields.io/badge/Tests-28%2F28%20Passing-brightgreen)](#-testing)
 
 **Precision Monitoring • BLE Mesh • Ultra-Low Power**
 
