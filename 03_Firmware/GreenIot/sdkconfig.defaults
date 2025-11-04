@@ -1,0 +1,139 @@
+# ESP32-C3 GreenIoT BLE Mesh Configuration
+# Auto-generated sdkconfig defaults for PlatformIO ESP-IDF
+
+# ============================================================================
+# Bluetooth Configuration
+# ============================================================================
+CONFIG_BT_ENABLED=y
+CONFIG_BT_BLUEDROID_ENABLED=y
+CONFIG_BT_BLUEDROID_PINNED_TO_CORE_0=y
+CONFIG_BT_BTU_TASK_STACK_SIZE=4096
+
+# ============================================================================
+# BLE Mesh Core Configuration
+# ============================================================================
+CONFIG_BLE_MESH=y
+CONFIG_BLE_MESH_NODE=y
+CONFIG_BLE_MESH_MAX_STORED_NODES=10
+CONFIG_BLE_MESH_MAX_CONN=1
+
+# Message Cache
+CONFIG_BLE_MESH_MSG_CACHE_SIZE=10
+CONFIG_BLE_MESH_MSG_TIMEOUT=6
+
+# Network Configuration
+CONFIG_BLE_MESH_SUBNET_COUNT=1
+CONFIG_BLE_MESH_APP_KEY_COUNT=1
+CONFIG_BLE_MESH_MODEL_KEY_COUNT=1
+CONFIG_BLE_MESH_MODEL_GROUP_COUNT=1
+
+# ============================================================================
+# BLE Mesh Provisioning
+# ============================================================================
+CONFIG_BLE_MESH_PB_ADV=y
+CONFIG_BLE_MESH_PB_GATT=y
+CONFIG_BLE_MESH_GATT_PROXY_SERVER=y
+
+# ============================================================================
+# BLE Mesh Low Power Node (LPN)
+# ============================================================================
+CONFIG_BLE_MESH_LOW_POWER=y
+CONFIG_BLE_MESH_LPN_AUTO=n
+CONFIG_BLE_MESH_LPN_ESTABLISHMENT=y
+CONFIG_BLE_MESH_LPN_AUTO_TIMEOUT=15
+CONFIG_BLE_MESH_LPN_RETRY_TIMEOUT=8
+CONFIG_BLE_MESH_LPN_RSSI_FACTOR=1
+CONFIG_BLE_MESH_LPN_RECV_WIN_FACTOR=1
+CONFIG_BLE_MESH_LPN_MIN_QUEUE_SIZE=1
+CONFIG_BLE_MESH_LPN_RECV_DELAY=100
+CONFIG_BLE_MESH_LPN_POLL_TIMEOUT=300
+CONFIG_BLE_MESH_LPN_INIT_POLL_TIMEOUT=100
+CONFIG_BLE_MESH_LPN_SCAN_LATENCY=10
+CONFIG_BLE_MESH_LPN_GROUPS=8
+
+# Disable Friend (LPN node, not Friend node)
+CONFIG_BLE_MESH_FRIEND=n
+
+# Disable Relay (for power savings)
+CONFIG_BLE_MESH_RELAY=n
+
+# ============================================================================
+# BLE Mesh Models
+# ============================================================================
+# Sensor Server Model
+CONFIG_BLE_MESH_SENSOR_SRV=y
+CONFIG_BLE_MESH_SENSOR_CLI=n
+
+# Configuration Server Model (always enabled for nodes)
+CONFIG_BLE_MESH_CFG_SRV=y
+
+# ============================================================================
+# BLE Mesh Features
+# ============================================================================
+CONFIG_BLE_MESH_TX_SEG_MAX=6
+CONFIG_BLE_MESH_RX_SEG_MAX=6
+CONFIG_BLE_MESH_CRPL=10
+CONFIG_BLE_MESH_RPL_STORE_TIMEOUT=5
+
+# Node Identity
+CONFIG_BLE_MESH_NODE_ID_TIMEOUT=60
+
+# Provisioning timeout
+CONFIG_BLE_MESH_PROV_TIMEOUT=60
+
+# ============================================================================
+# NVS (Non-Volatile Storage) - Required for BLE Mesh
+# ============================================================================
+CONFIG_NVS_ENCRYPTION=n
+
+# ============================================================================
+# ESP32-C3 Hardware Configuration
+# ============================================================================
+# Main task stack size (increase for BLE Mesh)
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096
+
+# System event task stack size
+CONFIG_ESP_SYSTEM_EVENT_TASK_STACK_SIZE=2048
+
+# ============================================================================
+# Logging Configuration
+# ============================================================================
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+CONFIG_LOG_MAXIMUM_LEVEL_INFO=y
+
+# BLE Mesh specific logging
+CONFIG_BLE_MESH_DEBUG=n
+CONFIG_BLE_MESH_LOG_LEVEL_INFO=y
+
+# ============================================================================
+# FreeRTOS Configuration
+# ============================================================================
+CONFIG_FREERTOS_HZ=1000
+CONFIG_FREERTOS_UNICORE=y
+CONFIG_FREERTOS_WATCHPOINT_END_OF_STACK=y
+
+# ============================================================================
+# Partition Table
+# ============================================================================
+CONFIG_PARTITION_TABLE_SINGLE_APP=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# ============================================================================
+# Compiler Optimization
+# ============================================================================
+CONFIG_COMPILER_OPTIMIZATION_SIZE=y
+CONFIG_COMPILER_OPTIMIZATION_ASSERTIONS_ENABLE=y
+
+# ============================================================================
+# Power Management (for battery operation)
+# ============================================================================
+CONFIG_PM_ENABLE=y
+CONFIG_PM_DFS_INIT_AUTO=y
+
+# ============================================================================
+# Bluetooth Controller Configuration
+# ============================================================================
+CONFIG_BTDM_CTRL_MODE_BLE_ONLY=y
+CONFIG_BTDM_CTRL_MODE_BR_EDR_ONLY=n
+CONFIG_BTDM_CTRL_MODE_BTDM=n
+
