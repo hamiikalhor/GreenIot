@@ -1,78 +1,79 @@
-# Test Suite
+# 🧪 Test Suite
 
-This directory contains all test files for the GreenIoT BLE Mesh Sensor Node.
+**Unit and integration tests for GreenIoT BLE Mesh Sensor Node**
 
 ---
 
 ## 📁 Test Files
 
-### Unit Tests
-
-- **`test_ble_mesh.cpp`** - Hardware tests (requires ESP32-C3)
-  - 15 BLE Mesh interface tests
-  - Configuration validation
-  - Provisioning tests
-  - Publishing tests
-
-- **`test_ble_mesh_with_mocks.cpp`** - Native tests (PC-based)
-  - 15 mock tests
+### Mock Tests (PC-Based)
+- **`test_ble_mesh_with_mocks.cpp`** - 15 BLE Mesh interface tests
   - No hardware required
-  - Fast execution (~2 seconds)
-  - ✅ **15/15 PASSING**
+  - Runs on any PC (Mac/Linux/Windows)
+  - Duration: ~2 seconds
+  - Status: ✅ 15/15 passing
 
-### Mock Files
+### Hardware Tests (ESP32-C3)
+- **`test_ble_mesh.cpp`** - BLE Mesh hardware validation
+  - Requires ESP32-C3-DevKitM-1
+  - Tests actual BLE Mesh stack
+  - Duration: ~30 seconds
+  - Status: ⏳ Pending hardware
 
+### Mocks & Stubs
 - **`mocks/mock_ble_mesh.cpp`** - BLE Mesh mock implementation
 - **`mocks/mock_ble_mesh.h`** - Mock helper functions
 - **`mocks/Arduino_stub.h`** - Arduino compatibility stubs
 
 ---
 
-## 🚀 Running Tests
-
-### Quick Start
+## 🚀 Quick Start
 
 ```bash
-# From project root
-./run_tests.sh mock    # Run mock tests (no hardware)
-./run_tests.sh hw      # Run hardware tests (requires ESP32-C3)
-./run_tests.sh all     # Run all tests
-```
+# Run mock tests (no hardware)
+./run_tests.sh mock
 
-### Using PlatformIO
+# Run hardware tests (requires ESP32-C3)
+./run_tests.sh hw
 
-```bash
-# Native mock tests
-platformio test -e native -f test_ble_mesh_with_mocks
-
-# ESP32-C3 hardware tests
-platformio test -e esp32-c3-devkitm-1 -f test_ble_mesh
+# Run all tests
+./run_tests.sh all
 ```
 
 ---
 
-## ✅ Test Results
+## 📊 Test Coverage
 
-### Latest Run (Mock Tests)
+| Component | Tests | Status |
+|-----------|-------|--------|
+| BLE Mesh Interface | 15 | ✅ Passing |
+| Configuration | 2 | ✅ Passing |
+| Initialization | 3 | ✅ Passing |
+| Provisioning | 2 | ✅ Passing |
+| Publishing | 3 | ✅ Passing |
+| Status & Reset | 3 | ✅ Passing |
+| Integration | 2 | ✅ Passing |
 
-```
-Processing * in native environment
-Building...
-Testing...
-================= 15 test cases: 15 succeeded in 00:00:00.834 =================
-```
-
-**Status:** ✅ All tests passing
+**Total:** 15/15 tests passing
 
 ---
 
 ## 📚 Documentation
 
-For detailed testing procedures, see:
-- **`docs/TESTING_GUIDE.md`** - Complete testing guide
-- **`HARDWARE_TEST_CHECKLIST.md`** - Hardware test checklist
-- **Main `README.md`** - Project overview
+For complete testing procedures and guides, see:
+- **Complete Testing Guide:** `../docs/TESTING.md`
+- **Hardware Checklist:** `../docs/HARDWARE_CHECKLIST.md`
+- **Main README:** `../README.md`
 
 ---
 
-**Last Updated:** November 4, 2025
+## 🛠️ Test Framework
+
+- **Unit Testing:** Unity (ThrowTheSwitch)
+- **Mock Framework:** Custom (embedded in test files)
+- **Build System:** PlatformIO
+- **Platforms:** Native (PC) + ESP32-C3
+
+---
+
+**For detailed procedures, see** [`../docs/TESTING.md`](../docs/TESTING.md)

@@ -21,9 +21,6 @@
 - [Configuration](#configuration)
 - [API Documentation](#api-documentation)
 - [Testing](#testing)
-  - [Quick Start - Run Tests](#quick-start---run-tests)
-  - [Mock Tests (No Hardware)](#mock-tests-no-hardware)
-  - [Hardware Tests](#hardware-tests)
 
 ---
 
@@ -599,12 +596,10 @@ typedef struct {
 
 ## 🧪 Testing
 
-### Quick Start - Run Tests
-
-**Easy test runner script** (recommended):
+### Quick Start
 
 ```bash
-# Run mock tests (no hardware required)
+# Run mock tests (no hardware required) ✅ 15/15 passing
 ./run_tests.sh mock
 
 # Run hardware tests (requires ESP32-C3)
@@ -612,53 +607,24 @@ typedef struct {
 
 # Run all tests
 ./run_tests.sh all
-
-# Show help
-./run_tests.sh help
 ```
 
-### Mock Tests (No Hardware)
+**Test Status:**
+- ✅ **Mock Tests:** 15/15 passing in ~2 seconds (PC-based, no hardware)
+- ⏳ **Hardware Tests:** Pending ESP32-C3 availability
+- ⏳ **Multi-Node Tests:** Pending hardware (requires 3-5 nodes)
 
-**✅ 15/15 tests passing** - PC-based tests with full BLE Mesh mocking:
+### Complete Testing Documentation
 
-```bash
-# Using PlatformIO directly
-platformio test -e native -f test_ble_mesh_with_mocks
+For comprehensive testing procedures, see **[`docs/TESTING.md`](docs/TESTING.md)**
 
-# Or use the script
-./run_tests.sh mock
-```
-
-**Test Coverage:**
-- ✅ Configuration validation (intervals, property IDs)
-- ✅ Initialization and deinitialization
-- ✅ Provisioning enable/disable
-- ✅ Sensor data publishing
-- ✅ Status management
-- ✅ Error handling
-- ✅ Factory reset
-- ✅ Full integration workflow
-
-**Duration:** ~2 seconds  
-**Platform:** Native (Mac/Linux/Windows)  
-**Hardware Required:** None!
-
-### Hardware Tests
-
-Tests on actual ESP32-C3 hardware:
-
-```bash
-# Upload and run tests
-platformio test -e esp32-c3-devkitm-1 -f test_ble_mesh
-
-# Or use the script
-./run_tests.sh hw
-```
-
-**Requirements:**
-- ESP32-C3-DevKitM-1
-- SHT31 sensor (optional for sensor tests)
-- USB connection
+**Includes:**
+- Mock tests (PC-based, no hardware)
+- Hardware tests (ESP32-C3)
+- Multi-node testing (BLE Mesh relay)
+- Provisioning procedures
+- Log analysis tools
+- Troubleshooting guide
 
 ### Serial Monitor Test
 
@@ -746,6 +712,43 @@ Basil (Ocimum basilicum) physiological response times:
 - **1 minute**: Excessive data, battery life ~2 months
 - **5 minutes**: ✅ Optimal balance, battery life ~7 months
 - **15 minutes**: Misses rapid microclimate changes
+
+---
+
+## 📚 Documentation
+
+### Documentation Structure
+
+```
+03_Firmware/GreenIot/
+├── README.md                           # This file - main entry point
+├── docs/
+│   ├── BLE_MESH_SENSOR_MODEL.md       # BLE Mesh implementation (21KB)
+│   ├── TESTING.md                      # Complete testing guide (16KB)
+│   └── HARDWARE_CHECKLIST.md          # Hardware test checklist (3KB)
+├── test/
+│   └── README.md                       # Test suite overview (2KB)
+└── tools/
+    └── analyze_mesh_logs.py            # Log analysis tool
+```
+
+### Quick Links
+
+| Document | Description | Size |
+|----------|-------------|------|
+| **[README.md](README.md)** | Main project documentation | 24KB |
+| **[docs/BLE_MESH_SENSOR_MODEL.md](docs/BLE_MESH_SENSOR_MODEL.md)** | BLE Mesh technical implementation | 21KB |
+| **[docs/TESTING.md](docs/TESTING.md)** | Complete testing procedures | 16KB |
+| **[docs/HARDWARE_CHECKLIST.md](docs/HARDWARE_CHECKLIST.md)** | Print-friendly test checklist | 3KB |
+| **[test/README.md](test/README.md)** | Test suite overview | 2KB |
+
+### API Documentation
+
+See inline Doxygen comments in header files:
+- `include/HAL/Wireless/ble_mesh_interface.h` - BLE Mesh interface
+- `include/HAL/Wireless/ble_mesh_config.h` - Configuration constants
+- `include/HAL/Sensor/sensor_interface.h` - Sensor abstraction
+- `include/Core/system.h` - System state machine
 
 ---
 
